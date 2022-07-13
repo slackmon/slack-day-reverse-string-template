@@ -1,0 +1,52 @@
+name: Slack App Deploy
+on:
+  push:
+    branches: [ main ]
+jobs:
+  Slack-App-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Installing slack-cli
+        run: curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
+      
+      - name: Creating .slack folder within project # Might not need it, may come from clone
+        run: mkdir -p .slack
+       
+      - name: Create .slack folder for slack-cli
+        run: mkdir -p .slack
+        working-directory: "/home/runner"
+      
+      - name: Creating credentials.json file
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "credentials.json"
+          json: '{"${{ secrets.TEAM_DOMAIN }}": {"token": "${{ secrets.APP_TOKEN }}", "team_domain": "${{ secrets.TEAM_DOMAIN }}", "team_id": "${{ secrets.TEAM_ID }}", "user_id": "${{ secrets.USER_ID }}"}}'
+          dir: ".slack/"
+      
+      - name: Move credentials.json
+        run: mv .slack/credentials.json /home/runner/.slack/credentials.json
+      
+      - name: Debug - Output of credentials.json
+        run: cat /home/runner/.slack/credentials.json
+
+      - name: Creating apps.json file
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "apps.json"
+          json: '{"apps": { "${{ secrets.APP_NAME }}": { "name": "${{ secrets.APP_NAME }}", "app_id": "${{ secrets.APP_ID }}", "team_id": "${{ secrets.TEAM_ID }}" }}}'
+          dir: ".slack/"
+
+      - name: Move apps.json
+        run: mv .slack/apps.json /home/runner/.slack/apps.json
+      
+      - name: Debug - Output of apps.json
+        run: cat /home/runner/.slack/apps.json
+      
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      
+      - name: List files in the repository
+        run: ls ${{ github.workspace }}
+        
+      - name: Deploy slack app
+        run: slack deploy --workspace ${{ secrets.TEAM_DOMAIN }}
