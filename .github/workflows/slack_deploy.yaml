@@ -56,4 +56,4 @@ jobs:
           cat ${{ github.workspace }}/manifest.ts
 
       - name: Deploy slack app
-        run: slack deploy --workspace ${{ secrets.TEAM_DOMAIN }}
+        run: slack deploy --workspace ${{ secrets.TEAM_DOMAIN }} --apihost https://dev.slack.com --verbose
