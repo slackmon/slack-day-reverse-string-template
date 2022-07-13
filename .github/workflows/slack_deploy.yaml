@@ -6,6 +6,7 @@ jobs:
   Slack-App-Deploy:
     runs-on: ubuntu-latest
     steps:
+      
       - name: Installing slack-cli
         run: curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
       
@@ -48,5 +49,11 @@ jobs:
       - name: List files in the repository
         run: ls ${{ github.workspace }}
         
+      - name: Replace strings in manifest.ts
+        run: |
+          sed -i 's|__APP_NAME__|${{ secrets.APP_NAME }}|g' ${{ github.workspace }}/manifest.ts
+          sed -i 's|__REPO_URL__|${{ github.server_url }}/${{ github.repository }}|g' ${{ github.workspace }}/manifest.ts
+          cat ${{ github.workspace }}/manifest.ts
+
       - name: Deploy slack app
         run: slack deploy --workspace ${{ secrets.TEAM_DOMAIN }}
