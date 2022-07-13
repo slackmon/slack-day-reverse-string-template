@@ -26,8 +26,8 @@ export const ReverseFunction = DefineFunction({
 });
 
 export default Manifest({
-  name: "reverse",
-  description: "Reverse a string",
+  name: "__APP_NAME__",
+  description: "__REPO_URL__",
   icon: "assets/icon.png",
   functions: [ReverseFunction],
   outgoingDomains: [],
