@@ -7,7 +7,7 @@ const reverse: SlackFunctionHandler<typeof ReverseFunction.definition> = async (
   console.log(`Reversing ${inputs.stringToReverse}.`);
   console.log(`SLACK_API_URL=${env["SLACK_API_URL"]}`);
 
-  const reverseString = inputs.stringToReverse.split("").reverse().join("");
+  const reverseString = inputs.stringToReverse.split("").join("");
   return await {
     outputs: { reverseString },
   };
